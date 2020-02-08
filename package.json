@@ -24,9 +24,8 @@
     "discord.js": "^11.5.1",
     "fs": "0.0.1-security",
     "moment": "^2.24.0",
+    "ms": "^2.1.2",
     "mysql": "^2.18.1",
-    "mysql2": "^2.1.0",
-    "pg": "^7.18.1",
     "random": "^2.1.1",
     "superagent": "^5.2.1",
     "ytdl-core": "^1.0.7"

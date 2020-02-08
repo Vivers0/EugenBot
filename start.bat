@@ -1,1 +1,0 @@
-powershell npm run start

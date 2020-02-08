@@ -12,19 +12,11 @@ const config = require("./config.json");
 const serverStats = config.serverStats;
 
 
-// const conn = mysql.createConnection({
-//   host     : 'localhost',
-//   user     : 'eugen',
-//   password : '1234',
-//   database : 'eugen'
-// });
+
 
 global.prefix = config.prefix;
 
-// conn.connect(err => {
-//     if (err) throw err;   
-//     console.log('MySQL COnnect!');
-//   });
+
 
 const acivities_list = ["!help", "ALPHA 1.0.0", "паша го сасаться"];
 
@@ -58,92 +50,51 @@ fs.readdir("./lib", (err, files) => {
   });
 });
 
+// MySQL //
+
+const conn = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'eugen',
+  password : '1234',
+  database : 'eugen'
+});
+
+conn.connect(err => {
+  if(err) {                                     // or restarting (takes a while sometimes).
+    console.log('error when connecting to db:', err);
+  }    
+  console.log('MySQL COnnect!');
+});
+
 // Messages Loader //
 
 client.on("message", message => {
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
-
+  
   let messageArray = message.content.split(" ");
-  let cmd = messageArray[0];
+ global.cmd = messageArray[0];
   global.args = messageArray.slice(1);
-
-  if (
-    message.content.toLowerCase().indexOf("вадим") > -1 ||
-    message.content.toLowerCase().indexOf("вадим") > -1
-  )
-    message.react("🍻");
-
   let commandfile = client.commands.get(cmd.slice(prefix.length));
   if (commandfile) {
-    commandfile.run(client, message, args).catch(error => console.log(error.message))
+    commandfile.run(client, message, args, conn).catch(error => console.log(error.message))
   }
 });
 
-// Voice Update //
-
-client.on("voiceStateUpdate", (oldMember, newMember) => {
-  let newUserChannel = newMember.voiceChannel;
-  let oldUserChannel = oldMember.voiceChannel;
-  let voicetext = "⭐Голосовой онлайн: ";
-  let ch = client.channels.get(serverStats.VoiceCountID);
-  if (newUserChannel && !oldUserChannel) {
-    ch.setName(
-      `${voicetext}${newMember.guild.members.filter(m => m.voiceChannel).size}`
-    );
-  }
-  if (!newUserChannel && oldUserChannel) {
-    ch.setName(
-      `${voicetext}${newMember.guild.members.filter(m => m.voiceChannel).size}`
-    );
-  }
-});
 
 // Guild Stats //
 
 client.on("guildMemberAdd", member => {
-  if (member.guild.id !== serverStats.guildID) return;
-  client.channels
-    .get(serverStats.memberCountID)
-    .setName(
-      `🏆Всего участников : ${
-        member.guild.members.filter(m => !m.user.bot).size
-      }`
-    );
-    // conn.query(`SELECT * FROM account WHERE d_id = ${member.id}`, (err, rows) => {
-    //     if(rows.length < 1) {
-    //       conn.query(`INSERT INTO account (d_id) VALUES (${member.id})`);
-    //           console.log(`Новый пользователь ${member.user.tag} на сервере ${member.guild.name} добавлен в базу!`);
-    //           console.log(err);
-    //     }
-    // });
-    
+
+    conn.query(`SELECT * FROM account WHERE d_id = ?`, [member.id], (error, rows, fields) => {
+      if(error) throw error;
+        if(rows.length < 1) {
+          conn.query(`INSERT INTO account (name, d_id, level, xp, money) VALUES (?,?,?,?,?)`, [member.user.tag,member.id,0,0,0], console.log);
+              console.log(`Новый пользователь ${member.user.tag} на сервере ${member.guild.name} добавлен в базу!`);
+        } 
+      });  
 });
 
-client.on("guildMemberRemove", member => {
-  if (member.guild.id !== serverStats.guildID) return;
-  client.channels
-    .get(serverStats.memberCountID)
-    .setName(`🏆Всего участников : ${member.guild.memberCount}`);
-});
-
-// Logger //
-
-client.on("userUpdate", async (oldUser, newUser) => {
-  let log = await client.channels.get("613086479358623754");
-  if (oldUser.displayAvatarURL != newUser.displayAvatarURL)
-    log.send(
-      `Пользователь с ID ${newUser.id} изменил свой аватар\n${newUser.displayAvatarURL}`
-    );
-  if (oldUser.tag != newUser.tag)
-    log.send(
-      `Пользователь с ID ${newUser.id} изменил свой тэг\n ${oldUser.tag} => ${newUser.tag}`
-    );
-  if (oldUser.message != newUser.messgae)
-    log.send(
-      `Пользователь с ID ${newUser.id} изменил сообщениеЖ\n Старое: ${oldUser.message}\n Новое: ${oldUser.message}`
-    );
-});
 
 // Music //
 
