@@ -26,7 +26,9 @@
     "moment": "^2.24.0",
     "ms": "^2.1.2",
     "mysql": "^2.18.1",
+    "opusscript": "0.0.7",
     "random": "^2.1.1",
+    "strftime": "^0.10.0",
     "superagent": "^5.2.1",
     "ytdl-core": "^1.0.7"
   },

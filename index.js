@@ -3,24 +3,15 @@ require("@babel/core").transform("code");
 // Parameters //
 
 import Discord from "discord.js";
-import fs from 'fs';
-import ytdl from 'ytdl-core';
 import mysql from 'mysql';
+import fs from 'fs';
 
 const client = new Discord.Client();
 const config = require("./config.json");
-const serverStats = config.serverStats;
-
-
-
 
 global.prefix = config.prefix;
 
-
-
 const acivities_list = ["!help", "ALPHA 1.0.0", "паша го сасаться"];
-
-const { rainbow } = require("./src/functions");
 
 client.commands = new Discord.Collection();
 client.login(config.token);
@@ -92,80 +83,13 @@ client.on("guildMemberAdd", member => {
           conn.query(`INSERT INTO account (name, d_id, level, xp, money) VALUES (?,?,?,?,?)`, [member.user.tag,member.id,0,0,0], console.log);
               console.log(`Новый пользователь ${member.user.tag} на сервере ${member.guild.name} добавлен в базу!`);
         } 
-      });  
-});
-
-
-// Music //
-
-client.on("message", async message => {
-//   const voiceChannel = message.member.voiceChannel;
-  let args = message.content.substring(prefix.length).split(" ");
-//   const permissions = voiceChannel.permissionsFor(message.client.user);
-
-  switch (args[0]) {
-    case "play":
-      function play(connection, message) {
-        var server = servers[message.guild.id];
-        server.dispatcher = connection.playStream(
-          ytdl(server.queue[0], { filter: "audioonly" })
-        );
-        server.queue.shift();
-        server.dispatcher.on("end", () => {
-          if (server.queue[0]) {
-            play(connection, message);
-          } else {
-            connection.disconnect();
-          }
-        });
-      }
-    //   if (!permissions.has("CONNECT")) {
-    //     return msg.channel.send(
-    //       "I cannot connect to your voice channel, make sure I have the proper permissions!"
-    //     );
-    //   }
-    //   if (!permissions.has("SPEAK")) {
-    //     return msg.channel.send(
-    //       "I cannot speak in this voice channel, make sure I have the proper permissions!"
-    //     );
-    //   }
-
-      if (!args[1]) {
-        message.channel.send("нет ссылки");
-        return;
-      }
-      if (!message.member.voiceChannel) {
-        message.channel.send("вас нет в войсе");
-        return;
-      }
-      if (!servers[message.guild.id])
-        servers[message.guild.id] = {
-          queue: []
-        };
-      var server = servers[message.guild.id];
-
-      server.queue.push(args[1]);
-
-      if (!message.guild.voiceConnection)
-        message.member.voiceChannel.join().then(connection => {
-          play(connection, message);
-        });
-      console.log(servers);
-      break;
-    case "skip":
-      var server = servers[message.guild.id];
-      if (server.dispatcher) server.dispatcher.end();
-      break;
-    case "stop":
-      var server = servers[message.guild.id];
-      if (message.guild.voiceConnection) {
-        for (let i = server.queue.length - 1; i >= 1; i--) {
-          server.queue.splice(i, 1);
+      });
+      
+      conn.query("SELECT * FROM bans WHERE user_id = ?", [member.id], (error, rows, fields) => {
+        if (error) throw error;
+        if(rows.length > 0) {
+          member.guild.owner.send(new Discord.RichEmbed().setAuthor("Внимание!").setDescription("На ваш сервер зашел человек, который находится в бан-листе у нашего бота.").addBlankField().addField("Участник:", "<@" + rows[0].user_id + ">", true).addField("Причина:", rows[0].reason, true).setColor("RED"));
         }
-        server.dispatcher.end();
-        console.log("stopped the queue");
-      }
-      if (message.guild.connection) message.guild.voiceConnection.disconnect();
-      break;
-  }
+      })
 });
+
