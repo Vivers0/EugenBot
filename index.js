@@ -6,6 +6,8 @@ import Discord from "discord.js";
 import mysql from 'mysql';
 import fs from 'fs';
 
+import genXP from './functions';
+
 const client = new Discord.Client();
 const config = require("./config.json");
 
@@ -62,6 +64,20 @@ conn.connect(err => {
 client.on("message", message => {
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
+
+  conn.query('SELECT * FROM account WHERE d_id = ?', [message.author.id], (err, rows) => {
+    if(err) throw err;
+    let curlvl = Number(rows[0].level);
+    let nxtlvl = Number(rows[0].level * 300);
+    let xp = Number(rows[0].xp);
+    let xpp = xp + Number(genXP());
+    if(rows.length >= 1){
+      conn.query(`UPDATE account SET xp = ? WHERE d_id = ?`, [xpp, message.author.id])
+    }
+    if(nxtlvl <= xp){
+      conn.query('UPDATE account SET level = ? WHERE d_id = ?', [curlvl+1, message.author.id])
+    }
+  })
   
   let messageArray = message.content.split(" ");
  global.cmd = messageArray[0];
