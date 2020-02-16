@@ -1,6 +1,7 @@
 
 function genXP(){
-    return Math.floor(Math.random() * (39 - 10 + 1)) + 10;
+    
+    return Math.floor(Math.random() * 10)+10;
 }
 
 module.exports = genXP;

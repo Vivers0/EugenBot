@@ -68,7 +68,7 @@ client.on("message", message => {
   conn.query('SELECT * FROM account WHERE d_id = ?', [message.author.id], (err, rows) => {
     if(err) throw err;
     let curlvl = Number(rows[0].level);
-    let nxtlvl = Number(rows[0].level * 300);
+    let nxtlvl = Number(rows[0].level * 1000);
     let xp = Number(rows[0].xp);
     let xpp = xp + Number(genXP());
     if(rows.length >= 1){
@@ -97,7 +97,6 @@ client.on("guildMemberAdd", member => {
       if(error) throw error;
         if(rows.length < 1) {
           conn.query(`INSERT INTO account (name, d_id, level, xp, money) VALUES (?,?,?,?,?)`, [member.user.tag,member.id,0,0,0], console.log);
-              console.log(`Новый пользователь ${member.user.tag} на сервере ${member.guild.name} добавлен в базу!`);
         } 
       });
       
