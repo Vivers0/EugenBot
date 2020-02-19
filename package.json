@@ -1,0 +1,43 @@
+{
+  "name": "eugen",
+  "version": "0.0.1",
+  "description": "Discord Easy bot",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx babel-node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vivers0/EugenBot.git"
+  },
+  "author": "Vivers0",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vivers0/EugenBot/issues"
+  },
+  "homepage": "https://github.com/Vivers0/EugenBot#readme",
+  "dependencies": {
+    "common-tags": "^1.8.0",
+    "discord.js": "^11.5.1",
+    "fs": "0.0.1-security",
+    "moment": "^2.24.0",
+    "ms": "^2.1.2",
+    "mysql": "^2.18.1",
+    "opusscript": "0.0.7",
+    "parse-ms": "^2.1.0",
+    "random": "^2.1.1",
+    "strftime": "^0.10.0",
+    "superagent": "^5.2.1",
+    "ytdl-core": "^1.0.7"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.4"
+  }
+}

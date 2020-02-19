@@ -1,0 +1,21 @@
+{
+    "token": "",
+    "prefix": "!",
+    "BotName": "EugenBot",
+    "BorderUrl": "https://vignette.wikia.nocookie.net/azur-lane/images/6/67/Prinz_Eugen.png/revision/latest?cb=20190829083724&path-prefix=ru",
+    "Avatar": "https://sun9-15.userapi.com/c855024/v855024111/1e1e68/MkY7CW60ACM.jpg",
+    "serverStats": {
+        "GuildID": "",
+        "VoiceCountID": "",
+        "MemberCountID": ""
+    },
+    "BotStats": {
+        "OwnerID": ""
+    },
+    "mysql": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "db": ""
+    }
+}
