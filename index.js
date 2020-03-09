@@ -27,7 +27,7 @@ client.on("ready", () => {
   }, 10000);
   // Console.log
   console.log("Ok!");
-  client.user.setStatus("idle");
+  client.user.setStatus("dnd");
 });
 
 // Loader //
