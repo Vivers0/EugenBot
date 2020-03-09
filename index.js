@@ -9,11 +9,11 @@ import fs from 'fs';
 import genXP from './functions';
 
 const client = new Discord.Client();
-const config = require("./config.json");
+const config = require("./src/config.json");
 
 global.prefix = config.prefix;
 
-const acivities_list = ["!help", "ALPHA 1.0.0", "паша го сасаться"];
+const acivities_list = ["!help", "ALPHA 1.0.0"];
 
 client.commands = new Discord.Collection();
 client.login(config.token);

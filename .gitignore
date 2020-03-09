@@ -2,3 +2,4 @@ node_modules
 lib/shop.js
 lib/shopadd.js
 config.json
+!config.example.json
