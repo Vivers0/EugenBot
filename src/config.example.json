@@ -4,9 +4,10 @@
     "BotName": "EugenBot",
     "BorderUrl": "",
     "Avatar": "",
-    "BotStats": {
-        "OwnerID": [
-            ""
-        ]
-    }
+    "OwnerID": "",
+    
+    "Acivities_list": [
+        "!help",
+        "ALPHA 1.0.0"
+    ]
 }
