@@ -6,7 +6,7 @@ import Discord from "discord.js";
 import mysql from 'mysql';
 import fs from 'fs';
 
-import genXP from './src/functions';
+import { genXP } from './src/functions';
 import config from './src/config';
 
 const client = new Discord.Client();
@@ -14,9 +14,7 @@ client.commands = new Discord.Collection();
 
 // Global Commands //
 global.prefix = config.prefix;
-global.cmd = messageArray[0];
-global.args = messageArray.slice(1);
-global.messageArray = message.content.split(" ");
+
 
 
 // Login //
@@ -53,7 +51,7 @@ fs.readdir("./lib", (err, files) => {
     var props = require(`./lib/${f}`);
     client.commands.set(props.help.name, props);
   });
-  console.log("Все модули запущены без ошибок!")
+  console.log(`Запущены все ${jsfiles.length} модулей без ошибок!`)
 });
 
 // MySQL //
@@ -68,6 +66,18 @@ const conn = mysql.createConnection({
 conn.connect(err => {
   if (err) console.log('error when connecting to db:', err);
   console.log('MySQL Connect!');
+});
+
+// Member Add //
+
+
+client.on("guildMemberAdd", async member => {
+  conn.query(`SELECT * FROM account WHERE d_id = ?`, [member.id], (error, rows, fields) => {
+    if (error) throw error;
+      if (rows.length < 1) {
+        conn.query(`INSERT INTO account (d_id, level, xp, money, descrip) VALUES (?,?,?,?,?)`, [member.id,0,0,0,'Введите описание, команда \`!drcr\`'], console.log);
+    } 
+  });
 });
 
 // Messages Loader //
@@ -85,13 +95,19 @@ client.on("message", message => {
 
     if (rows.length >= 1) {
       conn.query(`UPDATE account SET xp = ? WHERE d_id = ?`, [xpp, message.author.id])
+    } else {
+      conn.query(`INSERT INTO account (d_id, level, xp, money, descrip) VALUES (?,?,?,?,?)`, [member.id,0,0,0, 'Введите описание, команда \`!drcr\`'], console.log);
     }
 
     if (nxtlvl <= xp) {
       conn.query('UPDATE account SET level = ? WHERE d_id = ?', [curlvl+1, message.author.id])
     }
   });
-  
+
+
+  const messageArray = message.content.split(" ");
+  const cmd          = messageArray[0];
+  const args         = messageArray.slice(1);
 
   let commandfile  = client.commands.get(cmd.slice(prefix.length));
   if (commandfile) commandfile.run(client, message, args, conn).catch(error => console.log(error.message));
@@ -100,19 +116,4 @@ client.on("message", message => {
 
 // Guild Stats //
 
-client.on("guildMemberAdd", member => {
-  conn.query(`SELECT * FROM account WHERE d_id = ?`, [member.id], (error, rows, fields) => {
-    if (error) throw error;
-      if (rows.length < 1) {
-        conn.query(`INSERT INTO account (name, d_id, level, xp, money) VALUES (?,?,?,?,?)`, [member.user.tag,member.id,0,0,0], console.log);
-    } 
-  });
-    
-  conn.query("SELECT * FROM bans WHERE user_id = ?", [member.id], (error, rows, fields) => {
-    if (error) throw error;
-    if (rows.length > 0) {
-      member.guild.owner.send(new Discord.RichEmbed().setAuthor("Внимание!").setDescription("На ваш сервер зашел человек, который находится в бан-листе у нашего бота.").addBlankField().addField("Участник:", "<@" + rows[0].user_id + ">", true).addField("Причина:", rows[0].reason, true).setColor("RED"));
-    }
-  });
-});
 

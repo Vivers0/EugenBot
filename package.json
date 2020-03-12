@@ -22,7 +22,7 @@
   "homepage": "https://github.com/Vivers0/EugenBot#readme",
   "dependencies": {
     "common-tags": "^1.8.0",
-    "discord.js": "^11.5.1",
+    "discord.js": "^12.0.2",
     "fs": "0.0.1-security",
     "moment": "^2.24.0",
     "ms": "^2.1.2",
