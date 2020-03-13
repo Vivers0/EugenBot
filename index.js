@@ -60,7 +60,8 @@ const conn = mysql.createConnection({
   host     : 'localhost',
   user     : 'eugen',
   password : '1234',
-  database : 'eugen'
+  database : 'eugen',
+  charset  : 'utf8mb4_bin'
 });
 
 conn.connect(err => {
@@ -84,7 +85,7 @@ client.on("guildMemberAdd", async member => {
 
 client.on("message", message => {
   if (message.author.bot) return;
-  if (message.channel.type === "dm") return;
+
 
   conn.query('SELECT * FROM account WHERE d_id = ?', [message.author.id], (err, rows) => {
     if (err) throw err;
