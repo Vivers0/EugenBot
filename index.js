@@ -13,7 +13,6 @@ const config = require("./config.json");
 
 global.prefix = config.prefix;
 
-const acivities_list = ["!help", "ALPHA 1.0.0", "паша го сасаться"];
 
 client.commands = new Discord.Collection();
 client.login(config.token);
@@ -103,7 +102,7 @@ client.on("guildMemberAdd", member => {
       conn.query("SELECT * FROM bans WHERE user_id = ?", [member.id], (error, rows, fields) => {
         if (error) throw error;
         if(rows.length > 0) {
-          member.guild.owner.send(new Discord.RichEmbed().setAuthor("Внимание!").setDescription("На ваш сервер зашел человек, который находится в бан-листе у нашего бота.").addBlankField().addField("Участник:", "<@" + rows[0].user_id + ">", true).addField("Причина:", rows[0].reason, true).setColor("RED"));
+          member.guild.owner.send(new RichEmbed().setAuthor("Внимание!").setDescription("На ваш сервер зашел человек, который находится в бан-листе у нашего бота.").addBlankField().addField("Участник:", "<@" + rows[0].user_id + ">", true).addField("Причина:", rows[0].reason, true).setColor("RED"));
         }
       })
 });
